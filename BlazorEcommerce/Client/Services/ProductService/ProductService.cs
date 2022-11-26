@@ -13,16 +13,16 @@
 
         public async Task<ServiceResponse<Product>> GetProduct(int productId)
         {
-            var result = await _httpClient.GetFromJsonAsync<ServiceResponse<Product>>($"api/products/{productId}");
-            return result;
+            var response = await _httpClient.GetFromJsonAsync<ServiceResponse<Product>>($"api/product/{productId}");
+            return response;
         }
 
         public async Task GetProducts()
         {
-            var result = await _httpClient.GetFromJsonAsync<ServiceResponse<List<Product>>>("api/products");
-            if (result != null && result.Data != null)
+            var response = await _httpClient.GetFromJsonAsync<ServiceResponse<List<Product>>>("api/product");
+            if (response != null && response.Data != null)
             {
-                Products = result.Data;
+                Products = response.Data;
             }
         }
     }

@@ -1,5 +1,4 @@
 ﻿using BlazorEcommerce.Server.Data;
-using System.Linq;
 
 namespace BlazorEcommerce.Server.Services.ProductService
 {
@@ -12,7 +11,7 @@ namespace BlazorEcommerce.Server.Services.ProductService
             _context = context;
         }
 
-        public async Task<ServiceResponse<Product>> GetProductAsync(int productId)
+        public async Task<ServiceResponse<Product>> GetProduct(int productId)
         {
             var response = new ServiceResponse<Product>();
 
@@ -30,7 +29,7 @@ namespace BlazorEcommerce.Server.Services.ProductService
             return response;
         }
 
-        public async Task<ServiceResponse<List<Product>>> GetProductsAsync()
+        public async Task<ServiceResponse<List<Product>>> GetProducts()
         {
             var response = new ServiceResponse<List<Product>>
             {
