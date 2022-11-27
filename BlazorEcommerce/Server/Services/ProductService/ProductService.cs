@@ -11,6 +11,16 @@ namespace BlazorEcommerce.Server.Services.ProductService
             _context = context;
         }
 
+        public async Task<ServiceResponse<List<Product>>> GetProducts()
+        {
+            var response = new ServiceResponse<List<Product>>
+            {
+                Data = await _context.Products.ToListAsync()
+            };
+
+            return response;
+        }
+
         public async Task<ServiceResponse<Product>> GetProduct(int productId)
         {
             var response = new ServiceResponse<Product>();
@@ -29,11 +39,13 @@ namespace BlazorEcommerce.Server.Services.ProductService
             return response;
         }
 
-        public async Task<ServiceResponse<List<Product>>> GetProducts()
+        public async Task<ServiceResponse<List<Product>>> GetProductsByCategory(string categoryUrl)
         {
             var response = new ServiceResponse<List<Product>>
             {
-                Data = await _context.Products.ToListAsync()
+                Data = await _context.Products
+                    .Where(x => x.Category.Url.ToLower() == categoryUrl.ToLower())
+                    .ToListAsync()
             };
 
             return response;
