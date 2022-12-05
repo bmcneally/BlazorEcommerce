@@ -1,4 +1,6 @@
-﻿namespace BlazorEcommerce.Client.Services.ProductService
+﻿using BlazorEcommerce.Shared;
+
+namespace BlazorEcommerce.Client.Services.ProductService
 {
     public class ProductService : IProductService
     {
@@ -10,14 +12,15 @@
         }
 
         public List<Product> Products { get; set; } = new List<Product>();
+        public string Message { get; set; } = "Loading products...";
+
         public event Action ProductsChanged;
 
         public async Task GetProducts(string categoryUrl = null)
         {
-            var response = categoryUrl == null ?
-                await _httpClient.GetFromJsonAsync<ServiceResponse<List<Product>>>($"api/product") :
-                await _httpClient.GetFromJsonAsync<ServiceResponse<List<Product>>>($"api/product/category/{categoryUrl}");
+            var uri = categoryUrl == null ? "api/product" : $"api/product/category/{categoryUrl}";
 
+            var response = await _httpClient.GetFromJsonAsync<ServiceResponse<List<Product>>>(uri);
             if (response != null && response.Data != null)
             {
                 Products = response.Data;
@@ -30,6 +33,28 @@
         {
             var response = await _httpClient.GetFromJsonAsync<ServiceResponse<Product>>($"api/product/{productId}");
             return response;
+        }
+
+        public async Task SearchProducts(string searchText)
+        {
+            var response = await _httpClient.GetFromJsonAsync<ServiceResponse<List<Product>>>($"api/product/search/{searchText}");
+            if (response != null && response.Data != null)
+            {
+                Products = response.Data;
+            }
+
+            if (Products.Count == 0)
+            {
+                Message = "No matching products found.";
+            }
+
+            ProductsChanged?.Invoke();
+        }
+
+        public async Task<List<string>> GetProductSearchSuggestions(string searchText)
+        {
+            var response = await _httpClient.GetFromJsonAsync<ServiceResponse<List<string>>>($"api/product/searchsuggestions/{searchText}");
+            return response.Data;
         }
     }
 }
